@@ -41,7 +41,12 @@
     -webkit-font-smoothing:antialiased;
   }
   .mono{font-family:"IBM Plex Mono",monospace;}
-  .wrap{max-width:560px;margin:0 auto;padding:0 18px 96px;}
+  .wrap{max-width:560px;margin:0 auto;padding:8px 18px 96px;}
+
+  /* Breaks out of whatever narrow container a host page (e.g. a CMS content
+     block) puts this in, so it centers in the full viewport instead of a
+     cramped column. */
+  .fullbleed-outer{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);}
 
   header.mast{
     background:var(--deep);
@@ -115,6 +120,10 @@
     background:#fbfbfa;
     border:1px solid var(--line-strong);border-radius:8px;
     padding:11px 12px;
+    transition:border-color .15s ease,background .15s ease;
+  }
+  .field input:hover,.field select:hover,.field textarea:hover{
+    border-color:var(--deep-2);
   }
   .field input:focus,.field select:focus,.field textarea:focus{
     outline:2px solid var(--solar);outline-offset:1px;border-color:transparent;
@@ -131,7 +140,10 @@
     flex:1;padding:10px 8px;border-radius:8px;border:1px solid var(--line-strong);
     background:#fbfbfa;color:var(--ink-soft);font-size:14px;font-weight:500;
     font-family:"IBM Plex Sans",sans-serif;cursor:pointer;
+    transition:border-color .15s ease,background .15s ease,transform .1s ease;
   }
+  .yn button:hover{border-color:var(--deep-2);background:#f2f5f4;}
+  .yn button:active{transform:translateY(1px);}
   .yn button.sel-yes{background:var(--done-soft);border-color:var(--done);color:var(--done);}
   .yn button.sel-no{background:#eef0ef;border-color:var(--line-strong);color:var(--ink);}
   .yn button.picked{background:var(--solar-soft);border-color:var(--solar);color:var(--solar-ink);}
@@ -143,8 +155,11 @@
     display:block;
     border:2px dashed var(--line-strong);border-radius:10px;
     padding:18px;text-align:center;cursor:pointer;background:#fbfbfa;
+    transition:border-color .15s ease,background .15s ease;
   }
+  .photo-box:hover{border-color:var(--deep-2);background:#f2f5f4;}
   .photo-box.has-photo{border-style:solid;border-color:var(--done);padding:10px;}
+  .photo-box.has-photo:hover{border-color:var(--done);background:#fbfbfa;}
   .photo-box input{display:none;}
   .photo-box .hint{color:var(--ink-faint);font-size:13px;margin-top:4px;}
   .photo-box .cta{color:var(--deep-2);font-weight:600;font-size:14px;}
@@ -156,8 +171,6 @@
   }
 
   .submit-bar{
-    position:sticky;bottom:0;
-    background:linear-gradient(to top, var(--paper) 65%, transparent);
     padding:18px 0 6px;margin-top:8px;
   }
   button.submit{
@@ -165,7 +178,9 @@
     background:var(--solar);color:#3a2400;font-weight:600;font-size:16px;
     font-family:"Space Grotesk",sans-serif;cursor:pointer;
     box-shadow:0 6px 18px rgba(217,140,10,.35);
+    transition:box-shadow .15s ease,transform .1s ease;
   }
+  button.submit:hover:not(:disabled){box-shadow:0 8px 22px rgba(217,140,10,.45);}
   button.submit:active{transform:translateY(1px);}
   button.submit:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;}
   .form-note{text-align:center;font-size:12px;color:var(--ink-faint);margin-top:10px;}
@@ -182,6 +197,7 @@
 </head>
 <body>
 
+<div class="fullbleed-outer">
 <header class="mast">
   <div class="mast-inner">
     <div class="brand">
@@ -340,12 +356,13 @@
     </div>
   </form>
 </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
 <script>
   // Wire this up to the real backend once the FastAPI service exists.
-  const SUBMIT_ENDPOINT = null;
+  const SUBMIT_ENDPOINT = 'https://helio-appointments-api.onrender.com/submit';
 
   const form = document.getElementById('apptForm');
   const toast = document.getElementById('toast');
