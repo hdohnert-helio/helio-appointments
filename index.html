@@ -372,7 +372,7 @@
 
     <section class="card">
       <h2>Utility bill</h2>
-      <p class="sub">Photo of a recent bill, required.</p>
+      <p class="sub">Photo of a recent bill, optional.</p>
       <label class="photo-box" id="photoBox" for="photoInput">
         <input type="file" id="photoInput" accept="image/*" capture="environment">
         <div id="photoPlaceholder">
@@ -383,7 +383,6 @@
         <div class="photo-name" id="photoName" style="display:none;"></div>
       </label>
       <button type="button" class="photo-clear" id="photoClear" style="display:none;">Remove photo</button>
-      <p class="err" id="photoErr" style="display:none;">Attach a photo of the utility bill.</p>
     </section>
 
     <section class="card">
@@ -475,7 +474,6 @@
       photoName.style.display = 'block';
       photoBox.classList.add('has-photo');
       photoClear.style.display = 'inline';
-      document.getElementById('photoErr').style.display = 'none';
     };
     reader.readAsDataURL(file);
   });
@@ -529,10 +527,6 @@
     const apptTypeOk = !!choiceAnswers.apptType;
     document.getElementById('apptTypeErr').style.display = apptTypeOk ? 'none' : 'block';
     if (!apptTypeOk) ok = false;
-
-    const photoOk = !!photoFile;
-    document.getElementById('photoErr').style.display = photoOk ? 'none' : 'block';
-    if (!photoOk) ok = false;
 
     return ok;
   }
