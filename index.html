@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Helio Solar — Submit Appointment</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#15191b;
+    --ink-soft:#59636a;
+    --ink-faint:#8b9399;
+    --paper:#eceeec;
+    --panel:#ffffff;
+    --deep:#0f3a42;
+    --deep-2:#15525d;
+    --solar:#d98c0a;
+    --solar-ink:#7a4d00;
+    --solar-soft:#fbeecb;
+    --solar-line:#ecc878;
+    --done:#2e7d5b;
+    --done-soft:#e0efe7;
+    --bad:#c53030;
+    --bad-soft:#fbe4e4;
+    --line:#d8ddda;
+    --line-strong:#c2c9c4;
+    --shadow:0 1px 2px rgba(15,58,66,.06), 0 8px 24px rgba(15,58,66,.05);
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    font-size:15px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:"IBM Plex Mono",monospace;}
+  .wrap{max-width:560px;margin:0 auto;padding:0 18px 96px;}
+
+  header.mast{
+    background:var(--deep);
+    color:#eaf3f2;
+    border-bottom:3px solid var(--solar);
+  }
+  .mast-inner{max-width:560px;margin:0 auto;padding:26px 18px 22px;}
+  .brand{display:flex;align-items:center;gap:9px;margin:0 0 16px;}
+  .brand img{height:26px;width:auto;display:block;}
+  .brand span{
+    font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:15px;
+    letter-spacing:.03em;color:#fff;
+  }
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:#8fc4c2;margin:0 0 10px;
+  }
+  h1{
+    font-family:"Space Grotesk",sans-serif;
+    font-weight:600;font-size:26px;line-height:1.1;letter-spacing:-.01em;
+    margin:0 0 8px;color:#fff;
+  }
+  .lede{margin:0;color:#c5dbd9;font-size:14px;}
+
+  .setter-row{
+    display:flex;gap:8px;align-items:baseline;margin-top:18px;
+    font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:#8fc4c2;
+  }
+  .setter-row strong{
+    font-family:"IBM Plex Sans",sans-serif;font-size:14px;font-weight:600;color:#fff;
+  }
+  .setter-warn{
+    margin-top:18px;padding:10px 12px;border-radius:8px;
+    background:rgba(197,48,48,.22);border:1px solid rgba(197,48,48,.5);
+    color:#f5b8b8;font-size:12.5px;line-height:1.4;
+  }
+
+  section.card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    margin-top:20px;
+    padding:20px;
+  }
+  section.card h2{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:16px;font-weight:600;margin:0 0 4px;color:var(--deep);
+  }
+  section.card .sub{margin:0 0 16px;color:var(--ink-soft);font-size:13px;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .grid3{display:grid;grid-template-columns:1.4fr .8fr .8fr;gap:12px;}
+  @media(max-width:420px){
+    .grid2,.grid3{grid-template-columns:1fr;}
+  }
+
+  .field{margin-bottom:14px;}
+  .field:last-child{margin-bottom:0;}
+  .field label{
+    display:block;
+    font-family:"IBM Plex Mono",monospace;
+    font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:6px;
+  }
+  .field label .req{color:var(--solar-ink);margin-left:3px;}
+  .field input,.field select,.field textarea{
+    width:100%;
+    font-family:"IBM Plex Sans",sans-serif;font-size:15px;color:var(--ink);
+    background:#fbfbfa;
+    border:1px solid var(--line-strong);border-radius:8px;
+    padding:11px 12px;
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{
+    outline:2px solid var(--solar);outline-offset:1px;border-color:transparent;
+  }
+  .field textarea{resize:vertical;min-height:64px;font-family:inherit;}
+  .field.invalid input,.field.invalid select,.field.invalid textarea{
+    border-color:var(--bad);background:var(--bad-soft);
+  }
+  .field .err{display:none;color:var(--bad);font-size:12px;margin-top:5px;}
+  .field.invalid .err{display:block;}
+
+  .yn{display:flex;gap:10px;margin-top:6px;}
+  .yn button{
+    flex:1;padding:10px 8px;border-radius:8px;border:1px solid var(--line-strong);
+    background:#fbfbfa;color:var(--ink-soft);font-size:14px;font-weight:500;
+    font-family:"IBM Plex Sans",sans-serif;cursor:pointer;
+  }
+  .yn button.sel-yes{background:var(--done-soft);border-color:var(--done);color:var(--done);}
+  .yn button.sel-no{background:#eef0ef;border-color:var(--line-strong);color:var(--ink);}
+  .yn button.picked{background:var(--solar-soft);border-color:var(--solar);color:var(--solar-ink);}
+  .qfield{margin-bottom:16px;}
+  .qfield:last-child{margin-bottom:0;}
+  .qfield p{margin:0;font-size:14px;color:var(--ink);}
+
+  .photo-box{
+    display:block;
+    border:2px dashed var(--line-strong);border-radius:10px;
+    padding:18px;text-align:center;cursor:pointer;background:#fbfbfa;
+  }
+  .photo-box.has-photo{border-style:solid;border-color:var(--done);padding:10px;}
+  .photo-box input{display:none;}
+  .photo-box .hint{color:var(--ink-faint);font-size:13px;margin-top:4px;}
+  .photo-box .cta{color:var(--deep-2);font-weight:600;font-size:14px;}
+  .photo-preview{max-width:100%;max-height:220px;border-radius:8px;display:block;margin:0 auto;}
+  .photo-name{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);margin-top:8px;}
+  .photo-clear{
+    margin-top:8px;font-size:12px;color:var(--bad);background:none;border:0;
+    text-decoration:underline;cursor:pointer;font-family:inherit;
+  }
+
+  .submit-bar{
+    position:sticky;bottom:0;
+    background:linear-gradient(to top, var(--paper) 65%, transparent);
+    padding:18px 0 6px;margin-top:8px;
+  }
+  button.submit{
+    width:100%;padding:15px;border-radius:10px;border:0;
+    background:var(--solar);color:#3a2400;font-weight:600;font-size:16px;
+    font-family:"Space Grotesk",sans-serif;cursor:pointer;
+    box-shadow:0 6px 18px rgba(217,140,10,.35);
+  }
+  button.submit:active{transform:translateY(1px);}
+  button.submit:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;}
+  .form-note{text-align:center;font-size:12px;color:var(--ink-faint);margin-top:10px;}
+
+  .toast{
+    position:fixed;left:50%;bottom:24px;transform:translate(-50%,0);
+    background:var(--deep);color:#eaf3f2;padding:12px 20px;border-radius:10px;
+    font-size:14px;box-shadow:0 12px 28px rgba(0,0,0,.25);
+    display:none;z-index:50;max-width:90vw;text-align:center;
+  }
+  .toast.show{display:block;}
+  .toast.err{background:var(--bad);}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="mast-inner">
+    <div class="brand">
+      <img src="assets/logo-mark.png" alt="Helio Solar">
+      <span>HELIO SOLAR</span>
+    </div>
+    <p class="eyebrow">Setter Submission</p>
+    <h1>Submit an appointment</h1>
+    <p class="lede">Qualify the lead, attach the utility bill, and send it to the rep pool.</p>
+    <div class="setter-row" id="setterRow">
+      <span>Submitting as</span>
+      <strong id="setterDisplay"></strong>
+    </div>
+    <p class="setter-warn" id="setterWarn" style="display:none;">
+      This link isn't personalized to a setter — ask Harry for your own submission link before sending leads.
+    </p>
+  </div>
+</header>
+
+<div class="wrap">
+  <form id="apptForm" novalidate>
+
+    <section class="card">
+      <h2>Customer</h2>
+      <p class="sub">Who's the appointment with.</p>
+      <div class="grid2">
+        <div class="field" data-field="firstName">
+          <label>First name<span class="req">*</span></label>
+          <input type="text" name="firstName" autocomplete="given-name">
+          <p class="err">Required.</p>
+        </div>
+        <div class="field" data-field="lastName">
+          <label>Last name<span class="req">*</span></label>
+          <input type="text" name="lastName" autocomplete="family-name">
+          <p class="err">Required.</p>
+        </div>
+      </div>
+      <div class="field" data-field="street">
+        <label>Street address<span class="req">*</span></label>
+        <input type="text" name="street" autocomplete="street-address">
+        <p class="err">Required.</p>
+      </div>
+      <div class="grid3">
+        <div class="field" data-field="city">
+          <label>City<span class="req">*</span></label>
+          <input type="text" name="city" autocomplete="address-level2">
+          <p class="err">Required.</p>
+        </div>
+        <div class="field" data-field="state">
+          <label>State<span class="req">*</span></label>
+          <select name="state">
+            <option value="CT">CT — Connecticut</option>
+          </select>
+          <p class="err">Required.</p>
+        </div>
+        <div class="field" data-field="zip">
+          <label>ZIP<span class="req">*</span></label>
+          <input type="text" name="zip" autocomplete="postal-code" inputmode="numeric" placeholder="33101">
+          <p class="err">5 digits.</p>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field" data-field="phone">
+          <label>Phone<span class="req">*</span></label>
+          <input type="tel" name="phone" autocomplete="tel" placeholder="(555) 555-5555" inputmode="tel">
+          <p class="err">Enter a valid phone number.</p>
+        </div>
+        <div class="field" data-field="email">
+          <label>Email</label>
+          <input type="email" name="email" autocomplete="email" placeholder="optional">
+          <p class="err">Enter a valid email.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Appointment</h2>
+      <p class="sub">When the rep should show up, and how.</p>
+      <div class="qfield" data-choice-group="apptType">
+        <p>Appointment type<span class="req">*</span></p>
+        <div class="yn">
+          <button type="button" class="choice-btn" data-val="in_home">In-Home</button>
+          <button type="button" class="choice-btn" data-val="virtual">Virtual</button>
+        </div>
+        <p class="err" id="apptTypeErr" style="display:none;">Choose in-home or virtual.</p>
+      </div>
+      <div class="grid2">
+        <div class="field" data-field="apptDate">
+          <label>Date<span class="req">*</span></label>
+          <input type="date" name="apptDate">
+          <p class="err">Required.</p>
+        </div>
+        <div class="field" data-field="apptTime">
+          <label>Time<span class="req">*</span></label>
+          <input type="time" name="apptTime">
+          <p class="err">Required.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Qualification</h2>
+      <p class="sub">Answer all three before submitting.</p>
+
+      <div class="qfield" data-yn="isHomeowner">
+        <p>Is this the homeowner?<span class="req">*</span></p>
+        <div class="yn">
+          <button type="button" data-val="yes">Yes</button>
+          <button type="button" data-val="no">No</button>
+        </div>
+      </div>
+      <div class="qfield" data-yn="lowIncomePlan">
+        <p>Are they on a low-income electricity plan?<span class="req">*</span></p>
+        <div class="yn">
+          <button type="button" data-val="yes">Yes</button>
+          <button type="button" data-val="no">No</button>
+        </div>
+      </div>
+      <div class="qfield" data-yn="billOver150">
+        <p>Is their monthly electric bill over $150?<span class="req">*</span></p>
+        <div class="yn">
+          <button type="button" data-val="yes">Yes</button>
+          <button type="button" data-val="no">No</button>
+        </div>
+      </div>
+      <p class="err" id="qualErr" style="display:none;">Answer all three questions.</p>
+    </section>
+
+    <section class="card">
+      <h2>Utility bill</h2>
+      <p class="sub">Photo of a recent bill, required.</p>
+      <label class="photo-box" id="photoBox" for="photoInput">
+        <input type="file" id="photoInput" accept="image/*" capture="environment">
+        <div id="photoPlaceholder">
+          <div class="cta">Tap to take or upload a photo</div>
+          <div class="hint">JPEG or PNG</div>
+        </div>
+        <img id="photoPreview" class="photo-preview" style="display:none;">
+        <div class="photo-name" id="photoName" style="display:none;"></div>
+      </label>
+      <button type="button" class="photo-clear" id="photoClear" style="display:none;">Remove photo</button>
+      <p class="err" id="photoErr" style="display:none;">Attach a photo of the utility bill.</p>
+    </section>
+
+    <section class="card">
+      <h2>Notes</h2>
+      <p class="sub">Anything the rep should know before showing up.</p>
+      <div class="field">
+        <textarea name="notes" rows="3" placeholder="Optional"></textarea>
+      </div>
+    </section>
+
+    <div class="submit-bar">
+      <button type="submit" class="submit" id="submitBtn">Submit appointment</button>
+      <p class="form-note">Reps get an SMS + email the moment you submit. First to claim it gets the appointment.</p>
+    </div>
+  </form>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // Wire this up to the real backend once the FastAPI service exists.
+  const SUBMIT_ENDPOINT = null;
+
+  const form = document.getElementById('apptForm');
+  const toast = document.getElementById('toast');
+  const submitBtn = document.getElementById('submitBtn');
+
+  // Each setter gets their own link, e.g. index.html?setter=Jane+Doe&setterId=js001 —
+  // that's how we know who submitted without asking (or trusting) a name field.
+  const urlParams = new URLSearchParams(location.search);
+  const setterName = urlParams.get('setter');
+  const setterId = urlParams.get('setterId');
+  if (setterName) {
+    document.getElementById('setterDisplay').textContent = setterName;
+  } else {
+    document.getElementById('setterRow').style.display = 'none';
+    document.getElementById('setterWarn').style.display = 'block';
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'No setter link — contact Harry';
+  }
+
+  const ynAnswers = {};
+  document.querySelectorAll('.qfield[data-yn]').forEach(function(qf){
+    const key = qf.dataset.yn;
+    qf.querySelectorAll('.yn button').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        ynAnswers[key] = btn.dataset.val;
+        qf.querySelectorAll('.yn button').forEach(function(b){
+          b.classList.remove('sel-yes','sel-no');
+        });
+        btn.classList.add(btn.dataset.val === 'yes' ? 'sel-yes' : 'sel-no');
+        document.getElementById('qualErr').style.display = 'none';
+      });
+    });
+  });
+
+  const choiceAnswers = {};
+  document.querySelectorAll('[data-choice-group]').forEach(function(cg){
+    const key = cg.dataset.choiceGroup;
+    cg.querySelectorAll('.choice-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        choiceAnswers[key] = btn.dataset.val;
+        cg.querySelectorAll('.choice-btn').forEach(function(b){ b.classList.remove('picked'); });
+        btn.classList.add('picked');
+        document.getElementById('apptTypeErr').style.display = 'none';
+      });
+    });
+  });
+
+  const photoInput = document.getElementById('photoInput');
+  const photoBox = document.getElementById('photoBox');
+  const photoPlaceholder = document.getElementById('photoPlaceholder');
+  const photoPreview = document.getElementById('photoPreview');
+  const photoName = document.getElementById('photoName');
+  const photoClear = document.getElementById('photoClear');
+  let photoFile = null;
+
+  photoInput.addEventListener('change', function(){
+    const file = photoInput.files[0];
+    if (!file) return;
+    photoFile = file;
+    const reader = new FileReader();
+    reader.onload = function(e){
+      photoPreview.src = e.target.result;
+      photoPreview.style.display = 'block';
+      photoPlaceholder.style.display = 'none';
+      photoName.textContent = file.name;
+      photoName.style.display = 'block';
+      photoBox.classList.add('has-photo');
+      photoClear.style.display = 'inline';
+      document.getElementById('photoErr').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  photoClear.addEventListener('click', function(e){
+    e.preventDefault();
+    photoFile = null;
+    photoInput.value = '';
+    photoPreview.style.display = 'none';
+    photoPlaceholder.style.display = 'block';
+    photoName.style.display = 'none';
+    photoBox.classList.remove('has-photo');
+    photoClear.style.display = 'none';
+  });
+
+  function setInvalid(fieldName, invalid){
+    const el = form.querySelector('[data-field="' + fieldName + '"]');
+    if (!el) return;
+    el.classList.toggle('invalid', invalid);
+  }
+
+  function validPhone(v){ return v.replace(/\D/g,'').length >= 10; }
+  function validEmail(v){ return v === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  function validZip(v){ return /^\d{5}$/.test(v); }
+  function validState(v){ return v === 'CT'; }
+
+  function validate(data){
+    let ok = true;
+    const required = ['firstName','lastName','street','city','apptDate','apptTime'];
+    required.forEach(function(f){
+      const bad = !data[f];
+      setInvalid(f, bad);
+      if (bad) ok = false;
+    });
+    const stateBad = !validState(data.state);
+    setInvalid('state', stateBad); if (stateBad) ok = false;
+
+    const zipBad = !validZip(data.zip);
+    setInvalid('zip', zipBad); if (zipBad) ok = false;
+
+    const phoneBad = !validPhone(data.phone);
+    setInvalid('phone', phoneBad); if (phoneBad) ok = false;
+
+    const emailBad = !validEmail(data.email);
+    setInvalid('email', emailBad); if (emailBad) ok = false;
+
+    const qualOk = ['isHomeowner','lowIncomePlan','billOver150'].every(function(k){ return ynAnswers[k]; });
+    document.getElementById('qualErr').style.display = qualOk ? 'none' : 'block';
+    if (!qualOk) ok = false;
+
+    const apptTypeOk = !!choiceAnswers.apptType;
+    document.getElementById('apptTypeErr').style.display = apptTypeOk ? 'none' : 'block';
+    if (!apptTypeOk) ok = false;
+
+    const photoOk = !!photoFile;
+    document.getElementById('photoErr').style.display = photoOk ? 'none' : 'block';
+    if (!photoOk) ok = false;
+
+    return ok;
+  }
+
+  function showToast(msg, isErr){
+    toast.textContent = msg;
+    toast.classList.toggle('err', !!isErr);
+    toast.classList.add('show');
+    setTimeout(function(){ toast.classList.remove('show'); }, 3200);
+  }
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    const fd = new FormData(form);
+    const data = Object.fromEntries(fd.entries());
+    data.state = (data.state || '').toUpperCase();
+
+    if (!validate(data)) {
+      showToast('Fix the highlighted fields.', true);
+      return;
+    }
+
+    const payload = {
+      setter: setterName || null,
+      setterId: setterId || null,
+      customer: {
+        firstName: data.firstName, lastName: data.lastName,
+        street: data.street, city: data.city, state: data.state, zip: data.zip,
+        phone: data.phone, email: data.email || null
+      },
+      appointment: { date: data.apptDate, time: data.apptTime, type: choiceAnswers.apptType },
+      qualification: ynAnswers,
+      notes: data.notes || null,
+      utilityBillFileName: photoFile ? photoFile.name : null
+    };
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    try {
+      if (SUBMIT_ENDPOINT) {
+        const body = new FormData();
+        body.append('payload', JSON.stringify(payload));
+        if (photoFile) body.append('utilityBill', photoFile);
+        const res = await fetch(SUBMIT_ENDPOINT, { method: 'POST', body: body });
+        if (!res.ok) throw new Error('Server rejected submission');
+      } else {
+        console.log('Appointment payload (no backend wired up yet):', payload);
+      }
+      showToast('Submitted — reps have been notified.');
+      form.reset();
+      photoClear.click();
+      ynAnswers.isHomeowner = ynAnswers.lowIncomePlan = ynAnswers.billOver150 = undefined;
+      choiceAnswers.apptType = undefined;
+      document.querySelectorAll('.choice-btn').forEach(function(b){ b.classList.remove('picked'); });
+      document.querySelectorAll('.yn button').forEach(function(b){ b.classList.remove('sel-yes','sel-no'); });
+    } catch (err) {
+      showToast('Could not submit — try again.', true);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit appointment';
+    }
+  });
+</script>
+
+</body>
+</html>
