@@ -340,6 +340,7 @@
           <p class="err">Required.</p>
         </div>
       </div>
+      <p class="err" id="leadTimeErr" style="display:none;">Appointments must be scheduled at least 24 hours from now.</p>
     </section>
 
     <section class="card">
@@ -508,6 +509,19 @@
       setInvalid(f, bad);
       if (bad) ok = false;
     });
+    let leadTimeBad = false;
+    if (data.apptDate && data.apptTime) {
+      const apptDateTime = new Date(data.apptDate + 'T' + data.apptTime);
+      const minDateTime = new Date(Date.now() + 24 * 60 * 60 * 1000);
+      leadTimeBad = apptDateTime < minDateTime;
+    }
+    document.getElementById('leadTimeErr').style.display = leadTimeBad ? 'block' : 'none';
+    if (leadTimeBad) {
+      setInvalid('apptDate', true);
+      setInvalid('apptTime', true);
+      ok = false;
+    }
+
     const stateBad = !validState(data.state);
     setInvalid('state', stateBad); if (stateBad) ok = false;
 
@@ -572,7 +586,11 @@
         body.append('payload', JSON.stringify(payload));
         if (photoFile) body.append('utilityBill', photoFile);
         const res = await fetch(SUBMIT_ENDPOINT, { method: 'POST', body: body });
-        if (!res.ok) throw new Error('Server rejected submission');
+        if (!res.ok) {
+          let detail = 'Could not submit — try again.';
+          try { detail = (await res.json()).detail || detail; } catch (e) {}
+          throw new Error(detail);
+        }
       } else {
         console.log('Appointment payload (no backend wired up yet):', payload);
       }
@@ -584,7 +602,7 @@
       document.querySelectorAll('.choice-btn').forEach(function(b){ b.classList.remove('picked'); });
       document.querySelectorAll('.yn button').forEach(function(b){ b.classList.remove('sel-yes','sel-no'); });
     } catch (err) {
-      showToast('Could not submit — try again.', true);
+      showToast(err.message || 'Could not submit — try again.', true);
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Submit appointment';
