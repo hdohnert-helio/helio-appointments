@@ -134,6 +134,10 @@
   }
   .field .err{display:none;color:var(--bad);font-size:12px;margin-top:5px;}
   .field.invalid .err{display:block;}
+  /* Standalone error lines (not nested in a .field) — pinned explicitly
+     because the host page's own site-wide ".card" class collides with
+     ours and was inheriting white text here, making these invisible. */
+  #apptTypeErr,#qualErr,#leadTimeErr{color:var(--bad) !important;font-size:12px;margin-top:8px;}
 
   .yn{display:flex;gap:10px;margin-top:6px;}
   .yn button{
