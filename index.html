@@ -266,8 +266,8 @@
           <p class="err">Enter a valid phone number.</p>
         </div>
         <div class="field" data-field="email">
-          <label>Email</label>
-          <input type="email" name="email" autocomplete="email" placeholder="optional">
+          <label>Email<span class="req">*</span></label>
+          <input type="email" name="email" autocomplete="email">
           <p class="err">Enter a valid email.</p>
         </div>
       </div>
@@ -496,13 +496,13 @@
   }
 
   function validPhone(v){ return v.replace(/\D/g,'').length >= 10; }
-  function validEmail(v){ return v === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
   function validZip(v){ return /^\d{5}$/.test(v); }
   function validState(v){ return v === 'CT'; }
 
   function validate(data){
     let ok = true;
-    const required = ['firstName','lastName','street','city','utility','apptDate','apptTime'];
+    const required = ['firstName','lastName','street','city','utility','apptDate','apptTime','email'];
     required.forEach(function(f){
       const bad = !data[f];
       setInvalid(f, bad);
